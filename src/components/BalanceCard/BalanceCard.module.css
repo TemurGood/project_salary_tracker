@@ -1,0 +1,76 @@
+/* src/components/BalanceCard/BalanceCard.module.css */
+
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--color-primary);
+  transition: all var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.cardIncome {
+  border-left-color: var(--color-success);
+}
+
+.cardExpense {
+  border-left-color: var(--color-danger);
+}
+
+.cardBalance {
+  border-left-color: var(--color-primary);
+}
+
+.title {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-bottom: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.amount {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.amountIncome {
+  color: var(--color-success);
+}
+
+.amountExpense {
+  color: var(--color-danger);
+}
+
+.amountBalance {
+  color: var(--color-primary);
+}
+
+.icon {
+  position: absolute;
+  top: var(--spacing-lg);
+  right: var(--spacing-lg);
+  font-size: 2rem;
+  opacity: 0.1;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .card {
+    padding: var(--spacing-md);
+  }
+
+  .amount {
+    font-size: var(--font-size-xl);
+  }
+}

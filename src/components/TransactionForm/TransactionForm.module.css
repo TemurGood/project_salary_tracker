@@ -1,0 +1,142 @@
+/* src/components/TransactionForm/TransactionForm.module.css */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.typeSwitcher {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-sm);
+  background-color: var(--color-surface-hover);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-md);
+}
+
+.typeButton {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  color: var(--color-text-secondary);
+}
+
+.typeButton:hover {
+  background-color: var(--color-surface);
+}
+
+.typeButtonActiveIncome {
+  background-color: var(--color-success);
+  color: var(--color-text-inverse);
+}
+
+.typeButtonActiveExpense {
+  background-color: var(--color-danger);
+  color: var(--color-text-inverse);
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.input,
+.select,
+.textarea {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+  transition: border-color var(--transition-fast);
+  font-family: inherit;
+}
+
+.input:hover,
+.select:hover,
+.textarea:hover {
+  border-color: var(--color-border-hover);
+}
+
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgb(79 70 229 / 0.1);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-md);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all var(--transition-fast);
+}
+
+.buttonPrimary {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.buttonPrimary:hover {
+  background-color: var(--color-primary-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.buttonSecondary {
+  background-color: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.buttonSecondary:hover {
+  background-color: var(--color-border);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
