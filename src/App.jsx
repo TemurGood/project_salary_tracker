@@ -1,16 +1,15 @@
 // src/App.jsx
-import Analytics from './pages/Analytics/Analytics.jsx';
-import History from './pages/History/History.jsx';
-import Dashboard from './pages/Dashboard/Dashboard.jsx';
-import Layout from './components/Layout/Layout.jsx';
 import React from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom'; // <-- ЗАМЕНИЛИ BrowserRouter на HashRouter
+import Layout from './components/Layout/Layout.jsx';
+import Dashboard from './pages/Dashboard/Dashboard.jsx';
+import History from './pages/History/History.jsx';
+import Analytics from './pages/Analytics/Analytics.jsx';
 import styles from './App.module.css';
-import Header from './components/Header/Header.jsx';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter> {/* <-- ЗАМЕНИЛИ здесь */}
       <Routes>
         <Route
           path="/"
@@ -37,7 +36,7 @@ function App() {
           }
         />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
