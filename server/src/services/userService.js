@@ -1,6 +1,6 @@
 // server/src/services/userService.js
 import db from '../db/connection.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
 // Количество раундов шифрования (чем больше, тем безопаснее, но медленнее)

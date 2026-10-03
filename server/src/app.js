@@ -14,8 +14,25 @@ import summaryRouter from './routes/summary.js';
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:4173',
+];
+
 app.use(cors({
-  origin: config.corsOrigin, // Разрешаем запросы только с фронтенда
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (
+      config.corsOrigin === '*' ||
+      allowedOrigins.includes(origin) ||
+      origin === config.corsOrigin ||
+      origin.endsWith('.vercel.app')
+    ) {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true,
 }));
 

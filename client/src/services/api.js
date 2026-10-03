@@ -1,6 +1,6 @@
 // client/src/services/api.js
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1';
+const BASE_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api/v1' : 'http://localhost:3001/api/v1');
 
 // 🔥 Функции для работы с токеном
 const getToken = () => localStorage.getItem('token');

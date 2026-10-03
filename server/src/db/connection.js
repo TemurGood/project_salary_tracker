@@ -1,33 +1,99 @@
 // server/src/db/connection.js
-import sqlite3 from 'sqlite3';
-import { fileURLToPath } from 'url';
-import path from 'path';
-import fs from 'fs';
+import { createClient } from '@libsql/client';
 import { config } from '../config/index.js';
+import { schemaSql } from './schema.js';
 
-// Эмуляция __dirname для ES-модулей
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const isTurso = Boolean(config.tursoUrl);
 
-// Инициализируем базу данных
-const db = new sqlite3.Database(config.dbPath, (err) => {
-  if (err) {
-    console.error('❌ Ошибка подключения к базе данных:', err.message);
-  } else {
-    console.log('✅ Подключено к базе данных SQLite:', config.dbPath);
-    
-    // Читаем и выполняем SQL-скрипт для создания таблиц
-    const schemaPath = path.resolve(__dirname, 'schema.sql');
-    const schemaSql = fs.readFileSync(schemaPath, 'utf8');
-    
-    db.exec(schemaSql, (err) => {
-      if (err) {
-        console.error('❌ Ошибка выполнения SQL-скрипта:', err.message);
-      } else {
-        console.log('✅ Таблицы базы данных успешно созданы или уже существуют');
-      }
-    });
-  }
+// URL для подключения: если указан TURSO_DATABASE_URL - используем его, иначе локальный SQLite файл
+const dbUrl = isTurso ? config.tursoUrl : `file:${config.dbPath}`;
+
+console.log(`🔌 Подключение к базе данных: ${isTurso ? 'Turso Cloud (' + dbUrl + ')' : 'Локальный SQLite (' + dbUrl + ')'}`);
+
+export const client = createClient({
+  url: dbUrl,
+  authToken: config.tursoAuthToken || undefined,
 });
+
+// Адаптер для обратной совместимости с существующим кодом (sqlite3-подобный интерфейс)
+const db = {
+  rawClient: client,
+
+  run(sql, params = [], callback) {
+    if (typeof params === 'function') {
+      callback = params;
+      params = [];
+    }
+    client.execute({ sql, args: params || [] })
+      .then((res) => {
+        const ctx = {
+          changes: res.rowsAffected,
+          lastID: res.lastInsertRowid !== undefined ? Number(res.lastInsertRowid) : undefined,
+        };
+        if (callback) callback.call(ctx, null);
+      })
+      .catch((err) => {
+        if (callback) callback(err);
+      });
+  },
+
+  get(sql, params = [], callback) {
+    if (typeof params === 'function') {
+      callback = params;
+      params = [];
+    }
+    client.execute({ sql, args: params || [] })
+      .then((res) => {
+        const row = res.rows && res.rows.length > 0 ? { ...res.rows[0] } : null;
+        if (callback) callback(null, row);
+      })
+      .catch((err) => {
+        if (callback) callback(err);
+      });
+  },
+
+  all(sql, params = [], callback) {
+    if (typeof params === 'function') {
+      callback = params;
+      params = [];
+    }
+    client.execute({ sql, args: params || [] })
+      .then((res) => {
+        const rows = res.rows ? res.rows.map((row) => ({ ...row })) : [];
+        if (callback) callback(null, rows);
+      })
+      .catch((err) => {
+        if (callback) callback(err);
+      });
+  },
+
+  exec(sql, callback) {
+    client.executeMultiple(sql)
+      .then(() => {
+        if (callback) callback(null);
+      })
+      .catch((err) => {
+        if (callback) callback(err);
+      });
+  },
+};
+
+// Инициализация таблиц базы данных
+let schemaInitPromise = null;
+export const initSchema = () => {
+  if (!schemaInitPromise) {
+    schemaInitPromise = client.executeMultiple(schemaSql)
+      .then(() => {
+        console.log('✅ Таблицы базы данных успешно инициализированы');
+      })
+      .catch((err) => {
+        console.error('❌ Ошибка инициализации схемы базы данных:', err.message);
+      });
+  }
+  return schemaInitPromise;
+};
+
+// Запускаем инициализацию при импорте модуля
+initSchema();
 
 export default db;
